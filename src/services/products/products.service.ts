@@ -21,7 +21,7 @@ export class ProductsService {
 
   findOne(id: number): Product {
     return this.products.find((product) => {
-      return product.id === id;
+      return product.id == id;
     });
   }
 
@@ -40,7 +40,6 @@ export class ProductsService {
     const product = this.findOne(id);
 
     if (product) {
-      console.log(2);
       const index = this.products.findIndex((item) => item.id == id);
       this.products[index] = {
         ...product,

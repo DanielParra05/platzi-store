@@ -9,13 +9,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Res,
 } from '@nestjs/common';
 
-import { Response } from 'express';
-
+import { ProductsService } from 'src/services/products/products.service';
 @Controller('products')
 export class ProductsController {
+  constructor(private productService: ProductsService) {}
+
   @Get('filter')
   getProductFilter(): string {
     return `This is a filter`;
@@ -23,8 +23,8 @@ export class ProductsController {
 
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Res() response: Response, @Param('productId') productId: string) {
-    response.status(200).send({ message: `product ${productId}` });
+  getOne(@Param('productId') productId: string) {
+    return this.productService.findOne(+productId);
   }
 
   @Get()
@@ -33,25 +33,18 @@ export class ProductsController {
     @Query('limit') limit = 100,
     @Query('offset') offset = 0,
   ) {
-    return `products: limit=> ${limit} / offset => ${offset} / brand => ${brand}`;
+    return this.productService.findAll();
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() payload: any) {
-    return {
-      message: 'accion de crear',
-      payload,
-    };
+    return this.productService.create(payload);
   }
 
   @Put(':id')
   update(@Body() payload: any, @Param('id') id: number) {
-    return {
-      message: 'accion de actualizar',
-      id: id,
-      payload,
-    };
+    return this.productService.update(id, payload);
   }
 
   @Delete(':id')
